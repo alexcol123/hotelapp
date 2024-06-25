@@ -1474,7 +1474,6 @@ import {
 import ImageInputContainer from '@/components/form/ImageInputContainer'
 
 /* image input container */
-
 ;<ImageInputContainer
   image={profile.profileImage}
   name={profile.username}
@@ -2827,7 +2826,7 @@ function NavSearch() {
     }
     replace(`${pathname}?${params.toString()}`)
   }, 300)
-  
+
   useEffect(() => {
     if (!searchParams.get('search')) {
       setSearch('')
