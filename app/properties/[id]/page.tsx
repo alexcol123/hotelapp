@@ -12,12 +12,12 @@ import PropertyReview from "@/components/reviews/PropertyReview"
 import SubmitReview from "@/components/reviews/SubmitReview"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { fetchPropertyDetails } from "@/utils/actions"
+import { fetchPropertyDetails, findExistingReview } from "@/utils/actions"
 import dynamic from "next/dynamic"
 
 import { Share } from "next/font/google"
 import { redirect } from "next/navigation"
-
+import { auth } from '@clerk/nextjs/server'
 
 const DynamicMap = dynamic(
   () => import('@/components/properties/PropertyMap'),
@@ -39,6 +39,10 @@ const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
   const firstName = property.profile.firstName
   const profileImage = property.profile.profileImage
 
+  const { userId } = auth()
+  const isNotOwner = userId !== property.profile.clerkId
+
+  const reviewDoesNotExist = userId && isNotOwner && !(await findExistingReview(userId, property.id))
 
   return (
     <section>
@@ -68,13 +72,13 @@ const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
           <PropertyDetails details={details} />
           <UserInfo profile={{ profileImage, firstName }} />
 
-          <Separator  className="mt-4"/>
+          <Separator className="mt-4" />
 
-          <Description description={property.description} />  
+          <Description description={property.description} />
 
           <Amenities amenities={property.amenities} />
 
-           <DynamicMap countryCode={property.country} />
+          <DynamicMap countryCode={property.country} />
 
         </div>
         <div className='lg:col-span-4 flex flex-col items-center'>
@@ -83,10 +87,9 @@ const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
         </div>
       </section>
 
+      {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
 
-<SubmitReview propertyId={property.id} />
-
-<PropertyReview propertyId={property.id} />   
+      <PropertyReview propertyId={property.id} />
 
     </section>
   )
