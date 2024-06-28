@@ -1,7 +1,7 @@
 import FavoriteToggleButton from "@/components/card/FavoriteToggleButton"
 import PropertyRating from "@/components/card/PropertyRating"
 import Amenities from "@/components/properties/Amenities"
-import BookingCalendar from "@/components/properties/BookingCalendar"
+
 import BreadCrumbs from "@/components/properties/BreadCrumbs"
 import Description from "@/components/properties/Description"
 import ImageContainer from "@/components/properties/ImageContainer"
@@ -27,6 +27,13 @@ const DynamicMap = dynamic(
   }
 )
 
+const DynamicBookingWrapper = dynamic(() => import('@/components/booking/BookingWrapper'), {
+  ssr: false,
+  loading: () => <Skeleton className='h-[200px] w-full' />,
+}
+
+)
+
 
 const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
 
@@ -43,6 +50,8 @@ const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
   const isNotOwner = userId !== property.profile.clerkId
 
   const reviewDoesNotExist = userId && isNotOwner && !(await findExistingReview(userId, property.id))
+
+
 
   return (
     <section>
@@ -83,7 +92,12 @@ const PropertyDetailsPage = async ({ params }: { params: { id: string } }) => {
         </div>
         <div className='lg:col-span-4 flex flex-col items-center'>
           {/* calendar */}
-          <BookingCalendar />
+          < DynamicBookingWrapper
+            propertyId={property.id}
+            price={property.price}
+            bookings={property.bookings}
+             />
+
         </div>
       </section>
 
