@@ -4,7 +4,7 @@ import LoadingTable from "@/components/booking/LoadingTable"
 
 const loading = () => {
   return (
-  <LoadingTable />
+    <LoadingTable />
   )
 }
 export default loading
