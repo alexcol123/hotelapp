@@ -13,10 +13,13 @@ import UserIcon from './UserIcon'
 import { links } from '@/utils/links'
 import SignOutLink from './SignOutLink'
 import { SignedOut, SignedIn, SignInButton, SignUpButton } from '@clerk/nextjs'
-
+import{auth} from '@clerk/nextjs/server'
 
 const LinksDropdown = () => {
+  const { userId } = auth()
 
+  console.log(userId)
+  const isAdminUser = userId === process.env.ADMIN_USER_ID
 
 
   return (
@@ -53,6 +56,8 @@ const LinksDropdown = () => {
 
         <SignedIn>
           {links.map((link, index) => {
+
+if(link.label === 'admin' && !isAdminUser) return null
 
             return <DropdownMenuItem key={link.href}>
               <Link href={link.href} className='capitalize w-full' >
