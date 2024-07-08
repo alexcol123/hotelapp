@@ -13,16 +13,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import Stats from '@/components/reservations/Stats'
 
 const ReservationsPage = async () => {
 const reservations =  await fetchReservations()
+
+console.log(reservations)
 
 if (reservations.length === 0) {
   return <EmptyList />
 }
 
   return (
-    <div className='mt-16'>
+   <>
+   <Stats />
+   
+   <div className='mt-16'>
       <h4 className='mb-4 capitalize'>
         total reservations : {reservations.length}
       </h4>
@@ -73,6 +79,7 @@ if (reservations.length === 0) {
 
       </Table>
       </div>
+   </>
 
   )
 }
